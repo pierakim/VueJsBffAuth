@@ -1,0 +1,36 @@
+{
+  "Version": 3,
+
+  "ListAllProjects": true,
+
+  "MultiProjectConfigurations": {
+    "JavaScriptClient + VueJSClient + API + IdentityServer": {
+      "Projects": {
+        "Api": {},
+        "IdentityServer": {},
+        "JavaScriptClient": {},
+        "VueJSClient": {}
+      }
+    },
+    "JavaScriptClient + API + IdentityServer": {
+      "Projects": {
+        "Api": {},
+        "IdentityServer": {},
+        "JavaScriptClient": {}
+      }
+    },
+    "VueJSClient + API + IdentityServer": {
+      "Projects": {
+        "Api": {},
+        "IdentityServer": {},
+        "VueJSClient": {}
+      }
+    },
+    "API + IdentityServer": {
+      "Projects": {
+        "Api": {},
+        "IdentityServer": {}
+      }
+    }
+  }
+}
