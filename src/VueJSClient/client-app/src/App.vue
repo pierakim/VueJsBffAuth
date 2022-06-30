@@ -28,6 +28,12 @@
         <button @click="login" type="button" class="btn btn-primary">
           Login
         </button>
+        <button @click="localApi" type="button" class="btn btn-primary">
+          User Info
+        </button>
+        <button @click="logout" type="button" class="btn btn-primary">
+          Logout
+        </button>
       </div>
     </div>
   </nav>
@@ -40,12 +46,50 @@
 </template>
 
 <script lang="ts">
+import { onUpdated } from "@vue/runtime-core";
 import axios from "axios";
 import { Options, Vue } from "vue-class-component";
 
 export default class App extends Vue {
+  isUserAuthenticated = false;
+
+  userClaims = null;
+  async mounted() {
+    console.log(`the component is now mounted.`);
+    console.log(`Trying to get User Claim...`);
+    if (this.isUserAuthenticated) {
+      await this.getUserClaimFromBFF();
+    }
+  }
+
+  onUpdated() {
+    console.log(`the component is now updated.`);
+  }
+
   public login(): void {
     window.location.href = "/bff/login";
+  }
+
+  public logout(): void {
+    // var logoutUrl = this.userClaims?.find(
+    //   (claim) => claim.type === "bff:logout_url"
+    // ).value;
+    window.location.href = "/bff/logout";
+  }
+
+  public async getUserClaimFromBFF(): Promise<void> {
+    console.log(`getUserClaimFromBFF`);
+    axios.defaults.headers.common["X-CSRF"] = "1";
+    const res = await axios.get("/bff/user");
+    console.log("getUserClaimFromBFF: " + JSON.stringify(res));
+    this.userClaims = await res.data;
+    console.log("this.userClaims: " + this.userClaims);
+  }
+
+  public async localApi(): Promise<void> {
+    axios.defaults.headers.common["X-CSRF"] = "1";
+    const res = await axios.get("/api/User");
+    console.log("test02 " + JSON.stringify(res));
   }
 }
 </script>

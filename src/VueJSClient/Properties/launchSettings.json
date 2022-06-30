@@ -17,18 +17,18 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "VueJSClient Watch": {
-      "commandName": "Executable",
-      "executablePath": "dotnet",
-      "commandLineArgs": "watch run",
-      "workingDirectory": "$(ProjectDir)",
-      "launchBrowser": true,
-      "applicationUrl": "https://localhost:7051;http://localhost:5051",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": "true"
-    },
+    //"VueJSClient Watch": {
+    //  "commandName": "Executable",
+    //  "executablePath": "dotnet",
+    //  "commandLineArgs": "watch run",
+    //  "workingDirectory": "$(ProjectDir)",
+    //  "launchBrowser": true,
+    //  "applicationUrl": "https://localhost:7012;http://localhost:5051",
+    //  "environmentVariables": {
+    //    "ASPNETCORE_ENVIRONMENT": "Development"
+    //  },
+    //  "dotnetRunMessages": "true"
+    //},
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,

@@ -32,6 +32,8 @@ builder.Services
         options.GetClaimsFromUserInfoEndpoint = true;
     });
 
+builder.Services.AddControllers();
+
 var app = builder.Build();  
 if (app.Environment.IsDevelopment())
 {
@@ -48,16 +50,16 @@ app.UseBff();
 
 app.UseAuthorization();
 
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapBffManagementEndpoints();
 
     // Uncomment this for Controller support
-    // endpoints.MapControllers()
-    //     .AsBffApiEndpoint();
+    endpoints.MapControllers().RequireAuthorization();
 
-    endpoints.MapGet("/local/identity", LocalIdentityHandler)
-        .AsBffApiEndpoint();
+    //endpoints.MapGet("/local/identity", LocalIdentityHandler)
+    //    .AsBffApiEndpoint();
 
     endpoints.MapRemoteBffApiEndpoint("/remote", "https://localhost:6001")
         .RequireAccessToken(Duende.Bff.TokenType.User);
@@ -65,9 +67,9 @@ app.UseEndpoints(endpoints =>
 
 app.Run();
 
-[Authorize]
-static IResult LocalIdentityHandler(ClaimsPrincipal user, HttpContext context)
-{
-    var name = user.FindFirst("name")?.Value ?? user.FindFirst("sub")?.Value;
-    return Results.Json(new { message = "Local API Success!", user = name });
-}
+//[Authorize]
+//static IResult LocalIdentityHandler(ClaimsPrincipal user, HttpContext context)
+//{
+//    var name = user.FindFirst("name")?.Value ?? user.FindFirst("sub")?.Value;
+//    return Results.Json(new { message = "Local API Success!", user = name });
+//}
