@@ -1,6 +1,8 @@
+import Auth0Service from "@/services/Auth0Service";
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import LoginView from "../views/LoginView.vue";
+
+const auth0Service = new Auth0Service();
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -17,12 +19,13 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
-  {
-    path: "/login",
-    name: "login",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/LoginView.vue"),
-  },
+  // {
+  //   path: "/login",
+  //   name: "login",
+  //   component: () =>
+  //     import(/* webpackChunkName: "about" */ "../views/LoginView.vue"),
+  // },
+
   // {
   //   // /search/screens -> /search?q=screens
   //   path: "/login",
@@ -37,6 +40,15 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+  console.log(`before each`);
+  // let isAuthenticated = false;
+  console.log(`to: ` + JSON.stringify(to));
+  console.log(`from: ` + JSON.stringify(from));
+  await auth0Service.getUserClaimFromBFF();
+  next();
 });
 
 export default router;

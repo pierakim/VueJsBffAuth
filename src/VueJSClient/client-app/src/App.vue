@@ -46,20 +46,16 @@
 </template>
 
 <script lang="ts">
-import { onUpdated } from "@vue/runtime-core";
 import axios from "axios";
-import { Options, Vue } from "vue-class-component";
+import { Vue } from "vue-class-component";
+import Auth0Service from "./services/Auth0Service";
+
+const auth0Service = new Auth0Service();
 
 export default class App extends Vue {
-  isUserAuthenticated = false;
-
   userClaims = null;
   async mounted() {
-    console.log(`the component is now mounted.`);
-    console.log(`Trying to get User Claim...`);
-    if (this.isUserAuthenticated) {
-      await this.getUserClaimFromBFF();
-    }
+    console.log(`the component is now mounted`);
   }
 
   onUpdated() {
@@ -67,24 +63,21 @@ export default class App extends Vue {
   }
 
   public login(): void {
-    window.location.href = "/bff/login";
+    auth0Service.login();
   }
 
   public logout(): void {
-    // var logoutUrl = this.userClaims?.find(
-    //   (claim) => claim.type === "bff:logout_url"
-    // ).value;
-    window.location.href = "/bff/logout";
+    auth0Service.logout();
   }
 
-  public async getUserClaimFromBFF(): Promise<void> {
-    console.log(`getUserClaimFromBFF`);
-    axios.defaults.headers.common["X-CSRF"] = "1";
-    const res = await axios.get("/bff/user");
-    console.log("getUserClaimFromBFF: " + JSON.stringify(res));
-    this.userClaims = await res.data;
-    console.log("this.userClaims: " + this.userClaims);
-  }
+  // public async getUserClaimFromBFF(): Promise<void> {
+  //   console.log(`getUserClaimFromBFF`);
+  //   axios.defaults.headers.common["X-CSRF"] = "1";
+  //   const res = await axios.get("/bff/user");
+  //   console.log("getUserClaimFromBFF: " + JSON.stringify(res));
+  //   this.userClaims = await res.data;
+  //   console.log("this.userClaims: " + this.userClaims);
+  // }
 
   public async localApi(): Promise<void> {
     axios.defaults.headers.common["X-CSRF"] = "1";
