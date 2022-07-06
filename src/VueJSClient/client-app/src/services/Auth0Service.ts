@@ -1,4 +1,6 @@
+import store from "@/store";
 import axios from "axios";
+import { Store } from "vuex";
 
 export default class Auth0Service {
   isUserAuthenticated = false;
@@ -31,6 +33,8 @@ export default class Auth0Service {
           console.log("getUserClaimFromBFF: " + JSON.stringify(apiResponse));
           this.userClaims = apiResponse.data;
           console.log("this.userClaims: " + this.userClaims);
+          console.log("dispatch setIsUserAuthenticated");
+          store.dispatch("setIsUserAuthenticated", true);
         }
       });
     } catch (error) {

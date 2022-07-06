@@ -1,4 +1,5 @@
 import Auth0Service from "@/services/Auth0Service";
+import store from "@/store";
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 
@@ -47,6 +48,10 @@ router.beforeEach(async (to, from, next) => {
   // let isAuthenticated = false;
   console.log(`to: ` + JSON.stringify(to));
   console.log(`from: ` + JSON.stringify(from));
+  console.log(
+    `store.getters.isUserAuthenticatedState: ` +
+      store.getters.isUserAuthenticatedState
+  );
   await auth0Service.getUserClaimFromBFF();
   next();
 });
