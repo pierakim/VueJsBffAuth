@@ -46,15 +46,14 @@ const router = createRouter({
 router.beforeResolve(async (from, to) => {
   console.log(`Index - beforeEach`);
   // let isAuthenticated = false;
-  console.log(`from: ` + JSON.stringify(from));
-  console.log(`to: ` + JSON.stringify(to));
-  console.log(
-    `Index - beforeEach - store.getters.isUserAuthenticatedState: ` +
-      store.getters.isUserAuthenticatedState
-  );
-  debugger;
-  await auth0Service.getUserClaimFromBFF();
-  debugger;
+  //console.log(`from: ` + JSON.stringify(from));
+  //console.log(`to: ` + JSON.stringify(to));
+  // console.log(
+  //   `Index - beforeEach - store.getters.isUserAuthenticatedState: ` +
+  //     store.getters.isUserAuthenticatedState
+  // );
+  // debugger;
+  // await auth0Service.getUserClaimFromBFF();
   // next();
 });
 

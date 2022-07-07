@@ -25,13 +25,23 @@
             <a class="nav-link" href="#">Text03</a>
           </li>
         </ul>
-        <button @click="login" type="button" class="btn btn-primary">
+        <button
+          v-if="!this.$store.getters.isUserAuthenticatedState"
+          @click="login"
+          type="button"
+          class="btn btn-primary"
+        >
           Login
         </button>
         <button @click="localApi" type="button" class="btn btn-primary">
           User Info
         </button>
-        <button @click="logout" type="button" class="btn btn-primary">
+        <button
+          v-if="this.$store.getters.isUserAuthenticatedState"
+          @click="logout"
+          type="button"
+          class="btn btn-primary"
+        >
           Logout
         </button>
       </div>
@@ -48,7 +58,6 @@
 <script lang="ts">
 import axios from "axios";
 import { Vue } from "vue-class-component";
-import { useStore } from "vuex";
 import Auth0Service from "./services/Auth0Service";
 import store from "./store";
 
@@ -56,22 +65,22 @@ const auth0Service = new Auth0Service();
 
 export default class App extends Vue {
   userClaims = null;
-  created() {
-    debugger;
+  async created() {
+    if (!store.getters.isUserAuthenticatedState) {
+      await auth0Service.getUserClaimFromBFF();
+    }
     console.log(
       "App - created - store.getters.isUserAuthenticatedState: " +
         store.getters.isUserAuthenticatedState
     );
   }
   beforeMount() {
-    debugger;
     console.log(
       "App - beforeMount - store.getters.isUserAuthenticatedState: " +
         store.getters.isUserAuthenticatedState
     );
   }
   mounted() {
-    debugger;
     console.log(
       "App - mounted - store.getters.isUserAuthenticatedState: " +
         store.getters.isUserAuthenticatedState
