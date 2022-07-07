@@ -43,17 +43,19 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
-  console.log(`before each`);
+router.beforeResolve(async (from, to) => {
+  console.log(`Index - beforeEach`);
   // let isAuthenticated = false;
-  console.log(`to: ` + JSON.stringify(to));
   console.log(`from: ` + JSON.stringify(from));
+  console.log(`to: ` + JSON.stringify(to));
   console.log(
-    `store.getters.isUserAuthenticatedState: ` +
+    `Index - beforeEach - store.getters.isUserAuthenticatedState: ` +
       store.getters.isUserAuthenticatedState
   );
+  debugger;
   await auth0Service.getUserClaimFromBFF();
-  next();
+  debugger;
+  // next();
 });
 
 export default router;

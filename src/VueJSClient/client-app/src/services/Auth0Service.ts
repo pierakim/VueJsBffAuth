@@ -1,17 +1,24 @@
 import store from "@/store";
 import axios from "axios";
-import { Store } from "vuex";
 
 export default class Auth0Service {
   isUserAuthenticated = false;
   userClaims = null;
 
   onUpdated() {
-    console.log(`the component is now updated.`);
+    console.log(`Auth0Service - the component is now updated.`);
   }
 
-  public login(): void {
-    window.location.href = "/bff/login";
+  public async login(): Promise<void> {
+    // window.location.href = "/bff/login";
+    await axios
+      .get("/bff/login")
+      .then(function (response) {
+        console.log("test: " + response.request.res.responseUrl);
+      })
+      .catch(function (no200) {
+        console.error("404, 400, and other events");
+      });
   }
 
   public logout(): void {
@@ -22,23 +29,25 @@ export default class Auth0Service {
   }
 
   public async getUserClaimFromBFF(): Promise<void> {
-    console.log(`getUserClaimFromBFF`);
+    console.log(`Auth0Service - getUserClaimFromBFF`);
     axios.defaults.headers.common["X-CSRF"] = "1";
-    debugger;
     try {
-      await axios.get("/bff/user").then((apiResponse) => {
-        debugger;
+      return await axios.get("/bff/user").then(async (apiResponse) => {
         if (apiResponse) {
           this.isUserAuthenticated = true;
-          console.log("getUserClaimFromBFF: " + JSON.stringify(apiResponse));
+          // console.log(
+          //   "Auth0Service - getUserClaimFromBFF: " + JSON.stringify(apiResponse)
+          // );
           this.userClaims = apiResponse.data;
-          console.log("this.userClaims: " + this.userClaims);
-          console.log("dispatch setIsUserAuthenticated");
-          store.dispatch("setIsUserAuthenticated", true);
+          // console.log("Auth0Service - this.userClaims: " + this.userClaims);
+          debugger;
+          console.log("Auth0Service - dispatch setIsUserAuthenticated");
+          await store.dispatch("setIsUserAuthenticated", true);
+          debugger;
         }
       });
     } catch (error) {
-      console.log("error: " + JSON.stringify(error));
+      console.log("error during /bff/user");
     }
   }
 

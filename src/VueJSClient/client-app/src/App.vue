@@ -48,22 +48,42 @@
 <script lang="ts">
 import axios from "axios";
 import { Vue } from "vue-class-component";
+import { useStore } from "vuex";
 import Auth0Service from "./services/Auth0Service";
+import store from "./store";
 
 const auth0Service = new Auth0Service();
 
 export default class App extends Vue {
   userClaims = null;
-  async mounted() {
-    console.log(`the component is now mounted`);
+  created() {
+    debugger;
+    console.log(
+      "App - created - store.getters.isUserAuthenticatedState: " +
+        store.getters.isUserAuthenticatedState
+    );
+  }
+  beforeMount() {
+    debugger;
+    console.log(
+      "App - beforeMount - store.getters.isUserAuthenticatedState: " +
+        store.getters.isUserAuthenticatedState
+    );
+  }
+  mounted() {
+    debugger;
+    console.log(
+      "App - mounted - store.getters.isUserAuthenticatedState: " +
+        store.getters.isUserAuthenticatedState
+    );
   }
 
   onUpdated() {
-    console.log(`the component is now updated.`);
+    console.log(`App - mounted - the component is now updated.`);
   }
 
-  public login(): void {
-    auth0Service.login();
+  public async login(): Promise<void> {
+    await auth0Service.login();
   }
 
   public logout(): void {
