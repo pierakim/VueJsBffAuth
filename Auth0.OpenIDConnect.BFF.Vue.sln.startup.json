@@ -1,0 +1,15 @@
+{
+  "Version": 3,
+
+  "ListAllProjects": true,
+
+  "MultiProjectConfigurations": {
+    "VueJSClient + API + IdentityServer": {
+      "Projects": {
+        "Random.Api": {},
+        "IdentityServer": {},
+        "VueJSClient": {}
+      }
+    }
+  }
+}
