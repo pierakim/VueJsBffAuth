@@ -1,5 +1,10 @@
 using Duende.IdentityServer;
-using IdentityServerHost;
+using Duende.IdentityServer.EntityFramework.DbContexts;
+using Duende.IdentityServer.EntityFramework.Mappers;
+using IdentityServer.Data;
+using IdentityServer.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
@@ -11,21 +16,33 @@ internal static class HostingExtensions
     {
         builder.Services.AddRazorPages();
 
+        var migrationsAssembly = typeof(Program).Assembly.GetName().Name;
+        const string connectionString = @"Data Source=DESKTOP-GPGH2Q2\LOCALHOST;Initial Catalog=Duende.IdentityServer.db;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
+
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(connectionString));
+
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
         builder.Services.AddIdentityServer()
-            //.AddConfigurationStore(options =>
-            //{
-            //    options.ConfigureDbContext = b => b.UseSqlite(connectionString,
-            //        sql => sql.MigrationsAssembly(migrationsAssembly));
-            //})
-            //.AddOperationalStore(options =>
-            //{
-            //    options.ConfigureDbContext = b => b.UseSqlite(connectionString,
-            //        sql => sql.MigrationsAssembly(migrationsAssembly));
-            //})
-            .AddInMemoryIdentityResources(Config.IdentityResources)
-            .AddInMemoryApiScopes(Config.ApiScopes)
-            .AddInMemoryClients(Config.Clients)
-            .AddTestUsers(TestUsers.Users);
+            .AddConfigurationStore(options =>
+            {
+                options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
+                    sql => sql.MigrationsAssembly(migrationsAssembly));
+            })
+            .AddOperationalStore(options =>
+            {
+                options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
+                    sql => sql.MigrationsAssembly(migrationsAssembly));
+            })
+            .AddAspNetIdentity<ApplicationUser>();
+            //.AddInMemoryIdentityResources(Config.IdentityResources)
+            //.AddInMemoryApiScopes(Config.ApiScopes)
+            //.AddInMemoryClients(Config.Clients)
+            //.AddTestUsers(TestUsers.Users);
 
         builder.Services.AddAuthentication()
             .AddGoogle("Google", options =>
@@ -79,6 +96,7 @@ internal static class HostingExtensions
             app.UseDeveloperExceptionPage();
         }
 
+        InitializeDatabase(app);
         app.UseStaticFiles();
         app.UseHttpsRedirection();
         app.UseRouting();
@@ -96,5 +114,42 @@ internal static class HostingExtensions
         app.MapRazorPages().RequireAuthorization();
 
         return app;
+    }
+
+    private static void InitializeDatabase(IApplicationBuilder app)
+    {
+        using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+        {
+            serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+
+            var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+            context.Database.Migrate();
+            if (!context.Clients.Any())
+            {
+                foreach (var client in Config.Clients)
+                {
+                    context.Clients.Add(client.ToEntity());
+                }
+                context.SaveChanges();
+            }
+
+            if (!context.IdentityResources.Any())
+            {
+                foreach (var resource in Config.IdentityResources)
+                {
+                    context.IdentityResources.Add(resource.ToEntity());
+                }
+                context.SaveChanges();
+            }
+
+            if (!context.ApiScopes.Any())
+            {
+                foreach (var resource in Config.ApiScopes)
+                {
+                    context.ApiScopes.Add(resource.ToEntity());
+                }
+                context.SaveChanges();
+            }
+        }
     }
 }

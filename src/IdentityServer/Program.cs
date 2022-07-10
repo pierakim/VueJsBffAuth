@@ -12,20 +12,6 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    //var apiCorsPolicy = "ApiCorsPolicy";
-    //builder.Services.AddCors(options =>
-    //{
-    //    options.AddPolicy(name: apiCorsPolicy,
-    //                      builder =>
-    //                      {
-    //                          builder.WithOrigins("https://localhost:7051")
-    //                            .AllowAnyHeader()
-    //                            .AllowAnyMethod()
-    //                            .AllowCredentials();
-    //                            //.WithMethods("OPTIONS", "GET");
-    //                      });
-    //});
-
     builder.Host.UseSerilog((ctx, lc) => lc
         .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
         .Enrich.FromLogContext()
@@ -35,11 +21,18 @@ try
         .ConfigureServices()
         .ConfigurePipeline();
 
+    Log.Information("Seeding database...");
+    SeedData.EnsureSeedData(app);
+    Log.Information("Done seeding database. Exiting.");
+
     app.Run();
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Unhandled exception");
+    if (ex.GetType().Name != "StopTheHostException")
+    {
+        Log.Fatal(ex, "Unhandled exception");
+    }
 }
 finally
 {
