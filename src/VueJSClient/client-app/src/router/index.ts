@@ -1,9 +1,5 @@
-import Auth0Service from "@/services/Auth0Service";
-import store from "@/store";
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-
-const auth0Service = new Auth0Service();
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -20,12 +16,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
-  // {
-  //   path: "/login",
-  //   name: "login",
-  //   component: () =>
-  //     import(/* webpackChunkName: "about" */ "../views/LoginView.vue"),
-  // },
 
   // {
   //   // /search/screens -> /search?q=screens
@@ -45,16 +35,6 @@ const router = createRouter({
 
 router.beforeResolve(async (from, to) => {
   console.log(`Index - beforeEach`);
-  // let isAuthenticated = false;
-  //console.log(`from: ` + JSON.stringify(from));
-  //console.log(`to: ` + JSON.stringify(to));
-  // console.log(
-  //   `Index - beforeEach - store.getters.isUserAuthenticatedState: ` +
-  //     store.getters.isUserAuthenticatedState
-  // );
-  // debugger;
-  // await auth0Service.getUserClaimFromBFF();
-  // next();
 });
 
 export default router;

@@ -47,11 +47,6 @@
       </div>
     </div>
   </nav>
-  <!-- <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/login">Login</router-link>
-  </nav> -->
   <router-view />
 </template>
 
@@ -91,22 +86,13 @@ export default class App extends Vue {
     console.log(`App - mounted - the component is now updated.`);
   }
 
-  public async login(): Promise<void> {
-    await auth0Service.login();
+  public login(): void {
+    auth0Service.login();
   }
 
   public logout(): void {
     auth0Service.logout();
   }
-
-  // public async getUserClaimFromBFF(): Promise<void> {
-  //   console.log(`getUserClaimFromBFF`);
-  //   axios.defaults.headers.common["X-CSRF"] = "1";
-  //   const res = await axios.get("/bff/user");
-  //   console.log("getUserClaimFromBFF: " + JSON.stringify(res));
-  //   this.userClaims = await res.data;
-  //   console.log("this.userClaims: " + this.userClaims);
-  // }
 
   public async localApi(): Promise<void> {
     axios.defaults.headers.common["X-CSRF"] = "1";
