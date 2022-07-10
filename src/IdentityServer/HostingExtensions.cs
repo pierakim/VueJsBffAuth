@@ -12,6 +12,16 @@ internal static class HostingExtensions
         builder.Services.AddRazorPages();
 
         builder.Services.AddIdentityServer()
+            //.AddConfigurationStore(options =>
+            //{
+            //    options.ConfigureDbContext = b => b.UseSqlite(connectionString,
+            //        sql => sql.MigrationsAssembly(migrationsAssembly));
+            //})
+            //.AddOperationalStore(options =>
+            //{
+            //    options.ConfigureDbContext = b => b.UseSqlite(connectionString,
+            //        sql => sql.MigrationsAssembly(migrationsAssembly));
+            //})
             .AddInMemoryIdentityResources(Config.IdentityResources)
             .AddInMemoryApiScopes(Config.ApiScopes)
             .AddInMemoryClients(Config.Clients)
@@ -53,16 +63,16 @@ internal static class HostingExtensions
                                   builder.WithOrigins("https://localhost:7051")
                                     .AllowAnyHeader()
                                     .AllowAnyMethod();
-                                    //.AllowCredentials();
-                              //.WithMethods("OPTIONS", "GET");
-                          });
+                                  //.AllowCredentials();
+                                  //.WithMethods("OPTIONS", "GET");
+                              });
         });
 
         return builder.Build();
     }
-    
+
     public static WebApplication ConfigurePipeline(this WebApplication app)
-    { 
+    {
         app.UseSerilogRequestLogging();
         if (app.Environment.IsDevelopment())
         {
