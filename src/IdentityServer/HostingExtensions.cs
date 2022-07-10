@@ -1,7 +1,9 @@
 using Duende.IdentityServer;
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.EntityFramework.Mappers;
-using IdentityServerHost;
+using IdentityServer.Data;
+using IdentityServer.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -18,6 +20,13 @@ internal static class HostingExtensions
         const string connectionString = @"Data Source=DESKTOP-GPGH2Q2\LOCALHOST;Initial Catalog=Duende.IdentityServer.db;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
 
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(connectionString));
+
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
         builder.Services.AddIdentityServer()
             .AddConfigurationStore(options =>
             {
@@ -29,10 +38,11 @@ internal static class HostingExtensions
                 options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
                     sql => sql.MigrationsAssembly(migrationsAssembly));
             })
+            .AddAspNetIdentity<ApplicationUser>();
             //.AddInMemoryIdentityResources(Config.IdentityResources)
             //.AddInMemoryApiScopes(Config.ApiScopes)
             //.AddInMemoryClients(Config.Clients)
-            .AddTestUsers(TestUsers.Users);
+            //.AddTestUsers(TestUsers.Users);
 
         builder.Services.AddAuthentication()
             .AddGoogle("Google", options =>
